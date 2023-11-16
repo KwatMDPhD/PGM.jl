@@ -1,7 +1,7 @@
 name = "Kumo"
 uuid = "06d0ead5-60a2-440e-9b95-73bd73fb59a4"
 authors = ["KwatMDPhD <kwat.me@icloud.com>"]
-version = "0.2.5"
+version = "0.2.6"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -11,9 +11,12 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
+LinearAlgebra = "1"
 Nucleus = "0.15"
 OrderedCollections = "1.6"
+Random = "1"
 StatsBase = "0.34"
+Test = "1"
 julia = "1.9"
 
 [extras]

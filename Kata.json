@@ -2,6 +2,7 @@
   "download": {},
   "call": {
     "update": "julia --project --eval 'using Pkg; Pkg.update()'",
-    "run": "julia --project --eval 'using Kumo; using Aqua: test_all, test_ambiguities; test_all(Kumo; ambiguities = false); test_ambiguities(Kumo); using Pkg; Pkg.test()'"
+    "check": "julia --project --eval 'using Aqua: test_all, test_ambiguities; using Kumo; test_all(Kumo; ambiguities = false); test_ambiguities(Kumo)'",
+    "run": "julia --project --eval 'using Pkg; Pkg.test()'"
   }
 }
