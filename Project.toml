@@ -1,7 +1,7 @@
 name = "Kumo"
 uuid = "06d0ead5-60a2-440e-9b95-73bd73fb59a4"
 authors = ["KwatMDPhD <kwat.me@icloud.com>"]
-version = "0.2.7"
+version = "0.2.8"
 
 [deps]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
