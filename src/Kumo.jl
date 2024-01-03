@@ -350,11 +350,10 @@ function plot(
 
 end
 
-function heat(fe_sc; no_al_ = Dict{String, Any}())
+# TODO: Improve.
+function heat(fe_sc; no_al_ = Dict{String, Vector{String}}())
 
     he_ = zeros(length(NO_))
-
-    n_fe = n_al = 0
 
     for (id, no) in enumerate(NO_)
 
@@ -362,9 +361,7 @@ function heat(fe_sc; no_al_ = Dict{String, Any}())
 
             he_[id] = fe_sc[no]
 
-            n_fe += 1
-
-        elseif haskey(no_al_, no)
+        else
 
             sc_ = Float64[]
 
@@ -381,8 +378,6 @@ function heat(fe_sc; no_al_ = Dict{String, Any}())
             if !isempty(sc_)
 
                 he_[id] = mean(sc_)
-
-                n_al += 1
 
             end
 
