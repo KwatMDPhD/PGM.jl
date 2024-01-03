@@ -427,7 +427,7 @@ function make_edge_matrix()
 
 end
 
-function anneal(he_::AbstractVector, so_x_ta_x_ed; n_it = 1000, de = 0.5, ch = 0.000001)
+function anneal(he_, so_x_ta_x_ed; n_it = 1000, de = 0.5, ch = 0.000001)
 
     n_no = length(NO_)
 
@@ -501,19 +501,15 @@ function anneal(he_::AbstractVector, so_x_ta_x_ed; n_it = 1000, de = 0.5, ch = 0
 
 end
 
-function anneal(no_x_sa_x_he, so_x_ta_x_ed; ke_ar...)
-
-    no_x_sa_x_an = similar(no_x_sa_x_he)
+# TODO: Test.
+function anneal!(no_x_sa_x_he, so_x_ta_x_ed; ke_ar...)
 
     for (id, he_) in enumerate(eachcol(no_x_sa_x_he))
 
-        no_x_id_x_he = anneal(he_, so_x_ta_x_ed; ke_ar...)
-
-        no_x_sa_x_an[:, id] = view(no_x_id_x_he, :, size(no_x_id_x_he, 2))
+        # TODO: Benchmark `.=`.
+        no_x_sa_x_he[:, id] = anneal(he_, so_x_ta_x_ed; ke_ar...)[:, end]
 
     end
-
-    no_x_sa_x_an
 
 end
 
