@@ -350,6 +350,45 @@ function plot(
 
 end
 
+# TODO: Test.
+function find(no_al_, fe_)
+
+    for (no, al_) in no_al_
+
+        if isempty(al_)
+
+            continue
+
+        end
+
+        @info "🥷 $no = $(join(al_, "  "))"
+
+        for al in al_
+
+            la = lowercase(al)
+
+            for fe in fe_
+
+                lf = lowercase(fe)
+
+                if la == lf
+
+                    @info "🎯 $fe."
+
+                elseif contains(lf, la)
+
+                    @info "💣 $fe."
+
+                end
+
+            end
+
+        end
+
+    end
+
+end
+
 # TODO: Improve.
 function heat(fe_sc; no_al_ = Dict{String, Vector{String}}())
 
