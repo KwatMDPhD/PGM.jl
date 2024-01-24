@@ -389,7 +389,7 @@ function find(no_al_, fe_)
 
 end
 
-# TODO: Improve.
+# TODO: Consider `+1`.
 function heat(fe_sc; no_al_ = Dict{String, Vector{String}}())
 
     he_ = zeros(length(NO_))
@@ -466,7 +466,7 @@ function make_edge_matrix()
 
 end
 
-function anneal(he_, so_x_ta_x_ed; n_it = 1000, de = 0.5, ch = 0.000001)
+function play(he_, so_x_ta_x_ed; n_it = 1000, de = 0.5, ch = 0.000001)
 
     n_no = length(NO_)
 
@@ -541,12 +541,12 @@ function anneal(he_, so_x_ta_x_ed; n_it = 1000, de = 0.5, ch = 0.000001)
 end
 
 # TODO: Test.
-function anneal!(no_x_sa_x_he, so_x_ta_x_ed; ke_ar...)
+function play!(no_x_sa_x_he, so_x_ta_x_ed; ke_ar...)
 
     for (id, he_) in enumerate(eachcol(no_x_sa_x_he))
 
         # TODO: Benchmark `.=`.
-        no_x_sa_x_he[:, id] = anneal(he_, so_x_ta_x_ed; ke_ar...)[:, end]
+        no_x_sa_x_he[:, id] = play(he_, so_x_ta_x_ed; ke_ar...)[:, end]
 
     end
 

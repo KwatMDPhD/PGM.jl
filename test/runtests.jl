@@ -472,7 +472,7 @@ const SO_X_TA_X_ED = Kumo.make_edge_matrix()
 
 # ---- #
 
-const NO_X_ID_X_HE = Kumo.anneal(HE_, SO_X_TA_X_ED)
+const NO_X_ID_X_HE = Kumo.play(HE_, SO_X_TA_X_ED)
 
 # ---- #
 
@@ -536,16 +536,16 @@ const REA = [
 # ---- #
 
 # 15.625 μs (264 allocations: 113.62 KiB)
-#@btime Kumo.anneal(HE_, SO_X_TA_X_ED);
+#@btime Kumo.play(HE_, SO_X_TA_X_ED);
 
 # ---- #
 
-@test isapprox(Kumo.anneal(NO_X_SA_X_HE, SO_X_TA_X_ED), hcat(REA, 10REA); atol = 0.0001)
+@test isapprox(Kumo.play(NO_X_SA_X_HE, SO_X_TA_X_ED), hcat(REA, 10REA); atol = 0.0001)
 
 # ---- #
 
 # 34.333 μs (574 allocations: 230.89 KiB)
-#@btime Kumo.anneal(NO_X_SA_X_HE, SO_X_TA_X_ED);
+#@btime Kumo.play(NO_X_SA_X_HE, SO_X_TA_X_ED);
 
 # ---- #
 
