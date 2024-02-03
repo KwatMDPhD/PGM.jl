@@ -2,7 +2,7 @@
 
 julia_version = "1.9.4"
 manifest_format = "2.0"
-project_hash = "59e3b3bd8b7fbfa206e8ac36cdfe5070e013e8eb"
+project_hash = "7b0a9ec3930098b7aef6ed32c24a2017d9ca7160"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -719,7 +719,7 @@ version = "0.4.0"
 deps = ["CSV", "Clustering", "CodecZlib", "ColorSchemes", "Colors", "DataFrames", "Dates", "DelaunayTriangulation", "Distances", "Distributions", "GZip", "JSON", "KernelDensity", "LazySets", "Mmap", "MultipleTesting", "MultivariateStats", "NMF", "NonNegLeastSquares", "OrderedCollections", "Printf", "ProgressMeter", "Random", "Statistics", "StatsBase", "TOML", "Test", "XLSX"]
 path = "/Users/kwat/craft/jl/Nucleus.jl"
 uuid = "ef0d6b11-c3c3-4448-b7ee-336ac2b00706"
-version = "0.15.9"
+version = "0.16.1"
 
 [[deps.OffsetArrays]]
 git-tree-sha1 = "6a731f2b5c03157418a20c12195eb4b74c8f8621"
