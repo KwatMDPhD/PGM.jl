@@ -208,8 +208,6 @@ function plot(
     coe = Nucleus.Color.HEGE,
     col1 = "#ffffff",
     col2 = "#171412",
-    #hi = 800,
-    #wi = 800,
     ex = "",
 )
 
@@ -345,7 +343,6 @@ function plot(
             Dict("name" => "preset")
         end,
         ex,
-        #he = hi,
     )
 
 end
