@@ -207,7 +207,7 @@ function plot(
     nos = 24,
     coe = Nucleus.Color.HEGE,
     col1 = "#ffffff",
-    col2 = "#171412",
+    col2 = Nucleus.Color.HEDA,
     ex = "",
 )
 
