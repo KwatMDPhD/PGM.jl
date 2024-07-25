@@ -43,7 +43,7 @@ macro node(sy)
 
         mutable struct $sy <: Node
 
-            id
+            id::Any
 
             pr::$(esc(Float64))
 
@@ -66,11 +66,14 @@ using MetaGraphsNext: MetaGraph
 
 macro graph()
 
-    esc(quote
+    esc(
+        quote
 
-            const GR = PGM.MetaGraph(PGM.DiGraph(); label_type = Symbol, vertex_data_type = Float64)
+            const GR =
+                PGM.MetaGraph(PGM.DiGraph(); label_type = Symbol, vertex_data_type = Float64)
 
-    end)
+        end,
+    )
 
 end
 

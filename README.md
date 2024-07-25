@@ -1,6 +1,6 @@
 Probablistic Graphical Models in Julia 🕸️
 
-⚠️  Under rapid development 👷
+⚠️ Under rapid development 👷
 
 ---
 

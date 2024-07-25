@@ -43,16 +43,16 @@ end
 @factor p!(pe::Person, na::Nature, nu::Nurture) = begin
 
     pa_ = (na, nu)
-    
+
     pe.value = if pa_ == (:bad, :lower)
 
         :bad
 
-    elseif pa_ in ((:bad, :middle),(:bad, :upper), (:good, :middle))
+    elseif pa_ in ((:bad, :middle), (:bad, :upper), (:good, :middle))
 
         :typical
 
-    elseif pa_ in ((:good, :lower),(:good, :upper))
+    elseif pa_ in ((:good, :lower), (:good, :upper))
 
         :good
 
@@ -62,7 +62,7 @@ end
 
 @node Outcome :money
 
-@factor p!(ou::Outcome, pe::Person, ) = begin
+@factor p!(ou::Outcome, pe::Person) = begin
 
     ou.value = if pe == :bad
 
@@ -77,5 +77,5 @@ end
         0.8
 
     end
-    
+
 end
