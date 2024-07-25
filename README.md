@@ -1,4 +1,4 @@
-Probablistic Graphical Models in Julia 🕸️
+Probabilistic Graphical Models in Julia 🕸️
 
 ⚠️ Under rapid development 👷
 
