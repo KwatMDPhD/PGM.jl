@@ -1,90 +1,70 @@
 module PGM
 
-using Graphs: DiGraph, add_edge!, add_vertex!, nv
-
-macro graph()
-
-    quote
-
-        const $(esc(:GR)) = DiGraph()
-
-    end
-
-end
-
 abstract type Node end
 
-macro node(vr, vl)
+abstract type ContinuousNode <: Node end
 
-    vr = esc(vr)
+abstract type CategoricalNode <: Node end
 
-    vl = esc(vl)
+macro node(no, va)
 
-    sy = esc(Symbol)
-
-    it = esc(UInt8)
-
-    id = esc(:id)
-
-    ze = esc(zero)
+    ne = esc(no)
 
     quote
 
-        mutable struct $vr <: Node
+        mutable struct $no <: ContinuousNode
 
-            value::$sy
-
-            index::$it
+            index::UInt8
 
         end
 
-        $vr($id = $ze($it)) = $vr($vl, id)
+        $ne(id = zero(UInt8)) = $ne(id)
+
+        $(esc(:get_value))(::$ne) = $va
 
     end
 
 end
 
-macro node(vr, vl_...)
+macro node(no, va_...)
 
-    vr = esc(vr)
-
-    vl_ = map(eval, vl_)
-
-    nt = esc(Tuple{Vararg{Symbol}})
-
-    it = esc(UInt8)
-
-    id = esc(:id)
-
-    ze = esc(zero)
+    ne = esc(no)
 
     quote
 
-        mutable struct $vr <: Node
+        mutable struct $no <: CategoricalNode
 
-            value::$nt
-
-            index::$it
+            index::UInt8
 
         end
 
-        $vr($id = $ze($it)) = $vr($vl_, id)
+        $ne(id = zero(UInt8)) = $ne(id)
+
+        $(esc(:get_value))(::$ne) = ($(va_...),)
 
     end
 
 end
 
-function _make_string(vl::Symbol, id)
+function Base.show(io::IO, no::ContinuousNode)
 
-    "@$id $vl"
+    va = get_value(no)
+
+    id = get_index(no)
+
+    _show(io, no, iszero(id) ? string(va) : "@$id $va")
 
 end
 
-function _make_string(vl_, id)
+function Base.show(io::IO, no::CategoricalNode)
+
+    va_ = get_value(no)
+
+    id = get_index(no)
 
     st = ""
 
-    for ie in eachindex(vl_)
+    for ie in eachindex(va_)
 
         if !isone(ie)
 
@@ -98,35 +78,33 @@ function _make_string(vl_, id)
 
         end
 
-        st *= "$(vl_[ie])"
+        st *= string(va_[ie])
 
     end
 
-    st
+    _show(io, no, st)
 
 end
 
-function Base.show(io::IO, no::Node)
+function _show(io, no, st)
 
-    na = rsplit(string(typeof(no)), '.'; limit = 2)[end]
-
-    print(io, "$na = $(_make_string(no.value, no.index))")
+    print(io, "$(rsplit(string(typeof(no)), '.'; limit = 2)[end]) = $st")
 
 end
 
-macro factor(ex)
+get_value(no) = error("no method for $(typeof(no)).")
 
-    pa_..., no = (ty.args[2] for ty in eq.args[1].args[2:end])
+get_index(no) = no.index
+
+set_index!(no, id) = no.index = id
+
+p!(ar_...) = error("no method for $(typeof.(ar_)).")
+
+macro factor(fu)
 
     esc(quote
 
-        for pa in pa_
-
-            add_edge!(GR, pa --> no)
-
-        end
-
-        eq
+        $fu
 
     end)
 

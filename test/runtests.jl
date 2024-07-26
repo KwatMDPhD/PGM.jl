@@ -1,139 +1,115 @@
 using Test: @test
 
-using PGM: @factor, @graph, @node
+using PGM: @factor, @node, Node, get_index, set_index!
+
+import PGM: get_value
 
 # ----------------------------------------------------------------------------------------------- #
 
 # ---- #
 
-@macroexpand @graph
+struct ANode <: Node
 
-# ---- #
+    index::UInt8
 
-@graph
+end
 
-# ---- #
+no = ANode(0)
 
-GR
+try
 
-# ---- #
+    get_value(no)
 
-@macroexpand @node Variable :value
+catch er
 
-# ---- #
-
-@node AContinuousVariable :value
-
-# ---- #
-
-o0 = AContinuousVariable()
-
-# ---- #
-
-o1 = AContinuousVariable(255)
-
-# ---- #
-
-@macroexpand @node ACategoricalVariable :category1 :category2
-
-# ---- #
-
-@node ACategoricalVariable :category1 :category2
-
-# ---- #
-
-a0 = ACategoricalVariable()
-
-# ---- #
-
-a1 = ACategoricalVariable(1)
-
-# ---- #
-
-ACategoricalVariable(2)
-
-# ---- #
-
-@factor p!(na::Nature) = begin
-
-    na.index = rand() < 0.9 ? 1 : 2
+    er
 
 end
 
 # ---- #
 
-@node Nurture :lower :middle :upper
+@macroexpand @node AContinuousNode :value
 
 # ---- #
 
-@factor p!(nu::Nurture) = begin
+@node AContinuousNode :value
 
-    ra = rand()
+# ---- #
 
-    nu.index = if ra <= 0.1
+supertype(AContinuousNode)
 
-        1
+# ---- #
 
-    elseif 0.1 < ra < 0.9
+methods(get_value)
 
-        2
+# ---- #
 
-    elseif 0.9 <= ra
+co = AContinuousNode()
 
-        3
+# ---- #
 
-    end
+get_value(co)
+
+# ---- #
+
+get_index(co)
+
+# ---- #
+
+set_index!(co, 0)
+
+# ---- #
+
+@macroexpand @node ACategoricalNode :category1 :category2
+
+# ---- #
+
+@node ACategoricalNode :category1 :category2
+
+# ---- #
+
+supertype(ACategoricalNode)
+
+# ---- #
+
+methods(get_value)
+
+# ---- #
+
+ca = ACategoricalNode()
+
+# ---- #
+
+get_value(ca)
+
+# ---- #
+
+get_index(ca)
+
+# ---- #
+
+set_index!(ca, 0)
+
+# ---- #
+
+@macroexpand @factor p!(no::ANode) = begin
+
+    no.index = 0
 
 end
 
 # ---- #
 
-@node Person :bad :typical :good
+@factor p!(no::AContinuousNode) = begin
 
-# ---- #
-
-@factor p!(pe::Person, na::Nature, nu::Nurture) = begin
-
-    id_ = na.index, nu.index
-
-    pe.index = if id_ == (1, 1)
-
-        1
-
-    elseif pa_ in ((1, 2), (1, 3), (2, 2))
-
-        2
-
-    elseif pa_ in ((2, 1), (2, 3))
-
-        3
-
-    end
+    no.index = rand(1:255)
 
 end
 
 # ---- #
 
-@node Outcome :money
+@factor p!(no::ACategoricalNode) = begin
 
-# ---- #
-
-@factor p!(ou::Outcome, pe::Person) = begin
-
-    id = pe.index
-
-    ou.value = if isone(id)
-
-        0.2
-
-    elseif id == 2
-
-        0.5
-
-    elseif id == 3
-
-        0.8
-
-    end
+    no.index = rand() < 0.9 ? 1 : 2
 
 end

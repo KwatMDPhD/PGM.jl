@@ -2,17 +2,7 @@
 
 ⚠️ Under rapid development 👷
 
-## Variable names follow [the two-character style]()
-
-`ed`ge
-
-`gr`aph
-
-`no`de
-
-`pr`obability
-
-`sy`mbol
+Variable names follow [the two-character style]().
 
 ---
 
