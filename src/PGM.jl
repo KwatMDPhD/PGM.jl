@@ -2,11 +2,6 @@ module PGM
 
 using Graphs: DiGraph, add_edge!, add_vertex!, nv
 
-# `gr`aph
-# `no`de
-# `pr`obability
-# `sy`mbol
-
 macro graph()
 
     quote
@@ -19,75 +14,107 @@ end
 
 abstract type Node end
 
-function get_probability(no)
+macro node(vr, vl)
 
-    no.pr
+    vr = esc(vr)
 
-end
+    vl = esc(vl)
 
-function set_probability!(no, pr)
+    sy = esc(Symbol)
 
-    no.pr = pr
+    it = esc(UInt8)
 
-end
+    id = esc(:id)
 
-function Base.show(io::IO, no::Node)
-
-    print(io, "$(rsplit(string(typeof(no)), '.'; limit = 2)[end]) = $(get_probability(no))")
-
-end
-
-macro node(sy)
+    ze = esc(zero)
 
     quote
 
-        mutable struct $sy <: Node
+        mutable struct $vr <: Node
 
-            id::Any
+            value::$sy
 
-            pr::$(esc(Float64))
+            index::$it
 
         end
 
-        add_vertex!($(esc(:GR)))
+        $vr($id = $ze($it)) = $vr($vl, id)
 
     end
 
 end
 
-using Graphs: DiGraph, add_vertex!, nv
+macro node(vr, vl_...)
 
-using MetaGraphsNext: MetaGraph
+    vr = esc(vr)
 
-# `gr`aph
-# `no`de
-# `pr`obability
-# `sy`mbol
+    vl_ = map(eval, vl_)
 
-macro graph()
+    nt = esc(Tuple{Vararg{Symbol}})
 
-    esc(
-        quote
+    it = esc(UInt8)
 
-            const GR =
-                PGM.MetaGraph(PGM.DiGraph(); label_type = Symbol, vertex_data_type = Float64)
+    id = esc(:id)
 
-        end,
-    )
+    ze = esc(zero)
 
-end
+    quote
 
-macro node(sy)
+        mutable struct $vr <: Node
 
-    esc(quote
+            value::$nt
 
-        GR[sy] = 0.0
+            index::$it
 
-    end)
+        end
+
+        $vr($id = $ze($it)) = $vr($vl_, id)
+
+    end
 
 end
 
-macro factor(eq)
+function _make_string(vl::Symbol, id)
+
+    "@$id $vl"
+
+end
+
+function _make_string(vl_, id)
+
+    st = ""
+
+    for ie in eachindex(vl_)
+
+        if !isone(ie)
+
+            st *= " | "
+
+        end
+
+        if ie == id
+
+            st *= "@$id "
+
+        end
+
+        st *= "$(vl_[ie])"
+
+    end
+
+    st
+
+end
+
+function Base.show(io::IO, no::Node)
+
+    na = rsplit(string(typeof(no)), '.'; limit = 2)[end]
+
+    print(io, "$na = $(_make_string(no.value, no.index))")
+
+end
+
+macro factor(ex)
 
     pa_..., no = (ty.args[2] for ty in eq.args[1].args[2:end])
 
@@ -104,6 +131,5 @@ macro factor(eq)
     end)
 
 end
-
 
 end

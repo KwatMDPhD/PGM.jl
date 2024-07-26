@@ -1,6 +1,18 @@
-Probabilistic Graphical Models in Julia 🕸️
+# Probabilistic Graphical Models in Julia 🕸️
 
 ⚠️ Under rapid development 👷
+
+## Variable names follow [the two-character style]()
+
+`ed`ge
+
+`gr`aph
+
+`no`de
+
+`pr`obability
+
+`sy`mbol
 
 ---
 

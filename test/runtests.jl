@@ -1,78 +1,136 @@
 using Test: @test
 
-using PGM: factor, graph, node
+using PGM: @factor, @graph, @node
 
 # ----------------------------------------------------------------------------------------------- #
 
 # ---- #
 
+@macroexpand @graph
+
+# ---- #
+
 @graph
 
-@node Nature :bad :good
+# ---- #
+
+GR
+
+# ---- #
+
+@macroexpand @node Variable :value
+
+# ---- #
+
+@node AContinuousVariable :value
+
+# ---- #
+
+o0 = AContinuousVariable()
+
+# ---- #
+
+o1 = AContinuousVariable(255)
+
+# ---- #
+
+@macroexpand @node ACategoricalVariable :category1 :category2
+
+# ---- #
+
+@node ACategoricalVariable :category1 :category2
+
+# ---- #
+
+a0 = ACategoricalVariable()
+
+# ---- #
+
+a1 = ACategoricalVariable(1)
+
+# ---- #
+
+ACategoricalVariable(2)
+
+# ---- #
 
 @factor p!(na::Nature) = begin
 
-    na.value = rand() < 0.9 ? :bad : :good
+    na.index = rand() < 0.9 ? 1 : 2
 
 end
 
+# ---- #
+
 @node Nurture :lower :middle :upper
+
+# ---- #
 
 @factor p!(nu::Nurture) = begin
 
     ra = rand()
 
-    nu.value = if ra <= 0.1
+    nu.index = if ra <= 0.1
 
-        :lower
+        1
 
     elseif 0.1 < ra < 0.9
 
-        :middle
+        2
 
     elseif 0.9 <= ra
 
-        :upper
+        3
 
     end
 
 end
+
+# ---- #
 
 @node Person :bad :typical :good
 
+# ---- #
+
 @factor p!(pe::Person, na::Nature, nu::Nurture) = begin
 
-    pa_ = (na, nu)
+    id_ = na.index, nu.index
 
-    pe.value = if pa_ == (:bad, :lower)
+    pe.index = if id_ == (1, 1)
 
-        :bad
+        1
 
-    elseif pa_ in ((:bad, :middle), (:bad, :upper), (:good, :middle))
+    elseif pa_ in ((1, 2), (1, 3), (2, 2))
 
-        :typical
+        2
 
-    elseif pa_ in ((:good, :lower), (:good, :upper))
+    elseif pa_ in ((2, 1), (2, 3))
 
-        :good
+        3
 
     end
 
 end
 
+# ---- #
+
 @node Outcome :money
+
+# ---- #
 
 @factor p!(ou::Outcome, pe::Person) = begin
 
-    ou.value = if pe == :bad
+    id = pe.index
+
+    ou.value = if isone(id)
 
         0.2
 
-    elseif pe == :typical
+    elseif id == 2
 
         0.5
 
-    elseif pe == :good
+    elseif id == 3
 
         0.8
 
