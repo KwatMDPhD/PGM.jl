@@ -2,17 +2,15 @@ module PGM
 
 abstract type Node end
 
-abstract type ContinuousNode <: Node end
-
-abstract type CategoricalNode <: Node end
-
-macro node(no, va)
+macro node(no, ra)
 
     ne = esc(no)
 
+    # TODO: Pick UInt based on `ra`.
+
     quote
 
-        mutable struct $no <: ContinuousNode
+        mutable struct $no <: Node
 
             index::UInt8
 
@@ -20,93 +18,41 @@ macro node(no, va)
 
         $ne(id = zero(UInt8)) = $ne(id)
 
-        $(esc(:get_value))(::$ne) = $va
+        $(esc(:get_value))(::$ne) = $(esc(ra))
 
     end
 
 end
 
-macro node(no, va_...)
-
-    ne = esc(no)
-
-    quote
-
-        mutable struct $no <: CategoricalNode
-
-            index::UInt8
-
-        end
-
-        $ne(id = zero(UInt8)) = $ne(id)
-
-        $(esc(:get_value))(::$ne) = ($(va_...),)
-
-    end
-
-end
-
-function Base.show(io::IO, no::ContinuousNode)
-
-    va = get_value(no)
-
-    id = get_index(no)
-
-    _show(io, no, iszero(id) ? string(va) : "@$id $va")
-
-end
-
-function Base.show(io::IO, no::CategoricalNode)
+function Base.show(io::IO, no::Node)
 
     va_ = get_value(no)
 
     id = get_index(no)
 
-    st = ""
+    va = iszero(id) ? "" : va_[id]
 
-    for ie in eachindex(va_)
-
-        if !isone(ie)
-
-            st *= " | "
-
-        end
-
-        if ie == id
-
-            st *= "@$id "
-
-        end
-
-        st *= string(va_[ie])
-
-    end
-
-    _show(io, no, st)
+    print(io, "$(typeof(no)) $va_[$id] : $va")
 
 end
 
-function _show(io, no, st)
+_error(ar_) = error("no method defined for $(typeof.(ar_)).")
 
-    print(io, "$(rsplit(string(typeof(no)), '.'; limit = 2)[end]) = $st")
-
-end
-
-get_value(no) = error("no method for $(typeof(no)).")
+get_value(ar_...) = _error(ar_)
 
 get_index(no) = no.index
 
 set_index!(no, id) = no.index = id
 
-p!(ar_...) = error("no method for $(typeof.(ar_)).")
+p!(ar_...) = _error(ar_)
 
 macro factor(fu)
 
-    esc(quote
+    quote
 
-        $fu
+        $(esc(fu))
 
-    end)
+    end
 
 end
 
