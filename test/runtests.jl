@@ -4,6 +4,24 @@ using PGM
 
 # ----------------------------------------------------------------------------------------------- #
 
+struct S
+
+    f::Any
+
+    S() = new()
+
+    S(f) = new(f)
+
+end
+
+a = S()
+
+isdefined(a, :f)
+
+b = S(1)
+
+isdefined(b, :f)
+
 # ---- #
 
 @macroexpand @node ACategoricalNode (:category1, :category2)
@@ -18,7 +36,7 @@ supertype(ACategoricalNode)
 
 # ---- #
 
-methods(get_value)
+methods(get_values)
 
 # ---- #
 
@@ -26,15 +44,23 @@ ca = ACategoricalNode()
 
 # ---- #
 
-get_value(ca)
+get_values(ca)
 
 # ---- #
 
-get_index(ca)
+for id in eachindex(get_values(ca))
+
+    @info ACategoricalNode(id)
+
+end
 
 # ---- #
 
-set_index!(ca, 2)
+get(ca)
+
+# ---- #
+
+set!(ca, 2)
 
 # ---- #
 
@@ -50,7 +76,7 @@ supertype(AContinuousNode)
 
 # ---- #
 
-methods(get_value)
+methods(get_values)
 
 # ---- #
 
@@ -58,21 +84,29 @@ co = AContinuousNode()
 
 # ---- #
 
-get_value(co)
+get_values(co)
 
 # ---- #
 
-get_index(co)
+for id in eachindex(get_values(co))
+
+    @info AContinuousNode(id)
+
+end
 
 # ---- #
 
-set_index!(co, 8)
+get(co)
+
+# ---- #
+
+set!(co, 8)
 
 # ---- #
 
 @macroexpand @factor p!(ca::ACategoricalNode) = begin
 
-    set_index!(ca, rand() < 0.5 ? 1 : 2)
+    set!(ca, rand() < 0.5 ? 1 : 2)
 
 end
 
@@ -80,7 +114,7 @@ end
 
 @factor p!(ca::ACategoricalNode) = begin
 
-    set_index!(ca, rand() < 0.5 ? 1 : 2)
+    set!(ca, rand() < 0.5 ? 1 : 2)
 
 end
 
@@ -94,7 +128,7 @@ ca
 
 @factor p!(co::AContinuousNode) = begin
 
-    set_index!(co, rand(1:8))
+    set!(co, rand(1:8))
 
 end
 
@@ -110,9 +144,9 @@ co
 
 @factor p!(ch::Child; ca::ACategoricalNode, co::AContinuousNode) = begin
 
-    id_ = get_index(ca), get_index(co)
+    id_ = get(ca), get(co)
 
-    set_index!(ch, if all(isodd, id_)
+    set!(ch, if all(isodd, id_)
 
         1
 
@@ -144,9 +178,9 @@ p!(ch; ca, co)
 
 module NatureNurtureNetwork
 
-using PGM: @factor, @node, get_index, set_index!
+using PGM: @factor, @node, get, set!
 
-import PGM: get_value, p!
+import PGM: get_values, p!
 
 @node Nature (:low, :high)
 
@@ -156,7 +190,7 @@ import PGM: get_value, p!
 
 @factor p!(na::Nature) = begin
 
-    set_index!(na, rand() < 0.9 ? 1 : 2)
+    set!(na, rand() < 0.9 ? 1 : 2)
 
 end
 
@@ -164,7 +198,7 @@ end
 
     ra = rand()
 
-    set_index!(nu, if ra < 0.2
+    set!(nu, if ra < 0.2
 
         1
 
@@ -182,9 +216,9 @@ end
 
 @factor p!(pe::Person; na::Nature, nu::Nurture) = begin
 
-    id_ = (get_index(na), get_index(nu))
+    id_ = (get(na), get(nu))
 
-    set_index!(pe, if id_ == (1, 1) || id_ == (1, 2)
+    set!(pe, if id_ == (1, 1) || id_ == (1, 2)
 
         rand(1:2)
 

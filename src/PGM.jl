@@ -2,23 +2,21 @@ module PGM
 
 abstract type Node end
 
-macro node(no, ra)
-
-    ne = esc(no)
-
-    # TODO: Pick UInt based on `ra`.
+macro node(no, va_)
 
     quote
 
         mutable struct $no <: Node
 
-            index::UInt8
+            index::UInt16
+
+            $no() = new()
+
+            $no() = $no(zero(UInt16))
 
         end
 
-        $ne(id = zero(UInt8)) = $ne(id)
-
-        $(esc(:get_value))(::$ne) = $(esc(ra))
+        $(esc(:get_values))(::$(esc(no))) = $(esc(va_))
 
     end
 
@@ -26,25 +24,25 @@ end
 
 function Base.show(io::IO, no::Node)
 
-    va_ = get_value(no)
+    ty = typeof(no)
 
-    id = get_index(no)
+    va_ = get_values(no)
+
+    id = get(no)
 
     va = iszero(id) ? "" : va_[id]
 
-    print(io, "$(typeof(no)) $va_[$id] : $va")
+    print(io, "$ty $va_[$id] : $va")
 
 end
 
-_error(ar_) = error("no method defined for $(typeof.(ar_)).")
+get_values(ar_...) = throw(MethodError(get_values, ar_))
 
-get_value(ar_...) = _error(ar_)
+get(no) = no.index
 
-get_index(no) = no.index
+set!(no, id) = no.index = id
 
-set_index!(no, id) = no.index = id
-
-p!(ar_...) = _error(ar_)
+p!(ar_...) = throw(MethodError(p!, ar_))
 
 macro factor(fu)
 
