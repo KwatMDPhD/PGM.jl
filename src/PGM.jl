@@ -10,9 +10,9 @@ macro node(no, va_)
 
             index::UInt16
 
-            $no() = new()
+            $no(id) = new(id)
 
-            $no() = $no(zero(UInt16))
+            $no() = $no(0)
 
         end
 
@@ -28,7 +28,7 @@ function Base.show(io::IO, no::Node)
 
     va_ = get_values(no)
 
-    id = get(no)
+    id = get_index(no)
 
     va = iszero(id) ? "" : va_[id]
 
@@ -38,9 +38,9 @@ end
 
 get_values(ar_...) = throw(MethodError(get_values, ar_))
 
-get(no) = no.index
+get_index(no) = no.index
 
-set!(no, id) = no.index = id
+set_index!(no, id) = no.index = id
 
 p!(ar_...) = throw(MethodError(p!, ar_))
 

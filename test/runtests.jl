@@ -1,38 +1,18 @@
 using Test: @test
 
-using PGM
+using PGM: @factor, @node, Node, get_index, set_index!
+
+import PGM: get_values, p!
 
 # ----------------------------------------------------------------------------------------------- #
 
-struct S
+# ---- #
 
-    f::Any
-
-    S() = new()
-
-    S(f) = new(f)
-
-end
-
-a = S()
-
-isdefined(a, :f)
-
-b = S(1)
-
-isdefined(b, :f)
+@macroexpand @node CategoricalNode (:category1, :category2)
 
 # ---- #
 
-@macroexpand @node ACategoricalNode (:category1, :category2)
-
-# ---- #
-
-@node ACategoricalNode (:category1, :category2)
-
-# ---- #
-
-supertype(ACategoricalNode)
+@node CategoricalNode (:category1, :category2)
 
 # ---- #
 
@@ -40,7 +20,11 @@ methods(get_values)
 
 # ---- #
 
-ca = ACategoricalNode()
+ca = CategoricalNode()
+
+# ---- #
+
+foreach(id -> @info(CategoricalNode(id)), eachindex(get_values(ca)))
 
 # ---- #
 
@@ -48,31 +32,19 @@ get_values(ca)
 
 # ---- #
 
-for id in eachindex(get_values(ca))
-
-    @info ACategoricalNode(id)
-
-end
+get_index(ca)
 
 # ---- #
 
-get(ca)
+set_index!(ca, 2)
 
 # ---- #
 
-set!(ca, 2)
+@macroexpand @node ContinuousNode range(0, 1, 8)
 
 # ---- #
 
-@macroexpand @node AContinuousNode range(0, 1, 8)
-
-# ---- #
-
-@node AContinuousNode range(0, 1, 8)
-
-# ---- #
-
-supertype(AContinuousNode)
+@node ContinuousNode range(0, 1, 8)
 
 # ---- #
 
@@ -80,7 +52,11 @@ methods(get_values)
 
 # ---- #
 
-co = AContinuousNode()
+co = ContinuousNode()
+
+# ---- #
+
+foreach(id -> @info(ContinuousNode(id)), eachindex(get_values(co)))
 
 # ---- #
 
@@ -88,33 +64,25 @@ get_values(co)
 
 # ---- #
 
-for id in eachindex(get_values(co))
+get_index(co)
 
-    @info AContinuousNode(id)
+# ---- #
+
+set_index!(co, 8)
+
+# ---- #
+
+@macroexpand @factor p!(no::Node) = begin
+
+    set_index!(no, 0)
 
 end
 
 # ---- #
 
-get(co)
+@factor p!(ca::CategoricalNode) = begin
 
-# ---- #
-
-set!(co, 8)
-
-# ---- #
-
-@macroexpand @factor p!(ca::ACategoricalNode) = begin
-
-    set!(ca, rand() < 0.5 ? 1 : 2)
-
-end
-
-# ---- #
-
-@factor p!(ca::ACategoricalNode) = begin
-
-    set!(ca, rand() < 0.5 ? 1 : 2)
+    set_index!(ca, rand() < 0.5 ? 1 : 2)
 
 end
 
@@ -122,13 +90,15 @@ end
 
 p!(ca)
 
+# ---- #
+
 ca
 
 # ---- #
 
-@factor p!(co::AContinuousNode) = begin
+@factor p!(co::ContinuousNode) = begin
 
-    set!(co, rand(1:8))
+    set_index!(co, rand(1:8))
 
 end
 
@@ -136,17 +106,21 @@ end
 
 p!(co)
 
+# ---- #
+
 co
 
 # ---- #
 
 @node Child (:odd, :even, :differ)
 
-@factor p!(ch::Child; ca::ACategoricalNode, co::AContinuousNode) = begin
+# ---- #
 
-    id_ = get(ca), get(co)
+@factor p!(ch::Child; ca::CategoricalNode, co::ContinuousNode) = begin
 
-    set!(ch, if all(isodd, id_)
+    id_ = get_index(ca), get_index(co)
+
+    set_index!(ch, if all(isodd, id_)
 
         1
 
@@ -166,90 +140,20 @@ end
 
 ch = Child()
 
-p!(ca)
-
-p!(co)
-
-p!(ch; ca, co)
-
-[ca, co, ch]
-
 # ---- #
 
-module NatureNurtureNetwork
+begin
 
-using PGM: @factor, @node, get, set!
+    p!(ca)
 
-import PGM: get_values, p!
+    p!(co)
 
-@node Nature (:low, :high)
+    p!(ch; ca, co)
 
-@node Nurture (:low, :medium, :high)
-
-@node Person range(0, 1, 8)
-
-@factor p!(na::Nature) = begin
-
-    set!(na, rand() < 0.9 ? 1 : 2)
-
-end
-
-@factor p!(nu::Nurture) = begin
-
-    ra = rand()
-
-    set!(nu, if ra < 0.2
-
-        1
-
-    elseif 0.2 <= ra <= 0.8
-
-        2
-
-    elseif 0.8 < ra
-
-        3
-
-    end)
-
-end
-
-@factor p!(pe::Person; na::Nature, nu::Nurture) = begin
-
-    id_ = (get(na), get(nu))
-
-    set!(pe, if id_ == (1, 1) || id_ == (1, 2)
-
-        rand(1:2)
-
-    elseif id_ == (2, 2)
-
-        rand(3:6)
-
-    elseif id_ == (2, 1) || id_ == (1, 3) || id_ == (2, 3)
-
-        rand(7:8)
-
-    end)
-
-end
+    @info "" ca co ch
 
 end
 
 # ---- #
 
-na = NatureNurtureNetwork.Nature()
-
-nu = NatureNurtureNetwork.Nurture()
-
-pe = NatureNurtureNetwork.Person()
-
-# ---- #
-
-p!(na)
-
-p!(nu)
-
-p!(pe; na, nu)
-
-[na, nu, pe]
+include("NatureNurture.jl")
