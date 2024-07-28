@@ -1,5 +1,19 @@
 module PGM
 
+using Graphs: DiGraph
+
+macro ready()
+
+    esc(quote
+
+        using PGM: @node, get_index, set_index!
+
+        import PGM: get_values, p!
+
+    end)
+
+end
+
 abstract type Node end
 
 macro node(no, va_)
@@ -10,15 +24,47 @@ macro node(no, va_)
 
             index::UInt16
 
-            $no(id) = new(id)
+            function $no()
 
-            $no() = $no(0)
+                new(0)
+
+            end
+
+            function $no(id)
+
+                no = new()
+
+                set_index!(no, id)
+
+                no
+
+            end
 
         end
 
         $(esc(:get_values))(::$(esc(no))) = $(esc(va_))
 
     end
+
+end
+
+function get_values() end
+
+function set_index!(no, id)
+
+    if !(0 <= id <= lastindex(get_values(no)))
+
+        throw(DomainError(id))
+
+    end
+
+    no.index = id
+
+end
+
+function get_index(no)
+
+    no.index
 
 end
 
@@ -36,22 +82,6 @@ function Base.show(io::IO, no::Node)
 
 end
 
-get_values(ar_...) = throw(MethodError(get_values, ar_))
-
-get_index(no) = no.index
-
-set_index!(no, id) = no.index = id
-
-p!(ar_...) = throw(MethodError(p!, ar_))
-
-macro factor(fu)
-
-    quote
-
-        $(esc(fu))
-
-    end
-
-end
+function p!() end
 
 end

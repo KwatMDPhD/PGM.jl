@@ -1,10 +1,16 @@
 using Test: @test
 
-using PGM: @factor, @node, Node, get_index, set_index!
-
-import PGM: get_values, p!
+using PGM: @ready
 
 # ----------------------------------------------------------------------------------------------- #
+
+# ---- #
+
+@macroexpand @ready
+
+# ---- #
+
+@ready
 
 # ---- #
 
@@ -16,15 +22,11 @@ import PGM: get_values, p!
 
 # ---- #
 
-methods(get_values)
+foreach(id -> @info(CategoricalNode(id)), 0:2)
 
 # ---- #
 
 ca = CategoricalNode()
-
-# ---- #
-
-foreach(id -> @info(CategoricalNode(id)), eachindex(get_values(ca)))
 
 # ---- #
 
@@ -40,6 +42,18 @@ set_index!(ca, 2)
 
 # ---- #
 
+try
+
+    set_index!(ca, 3)
+
+catch er
+
+    @test er isa DomainError
+
+end
+
+# ---- #
+
 @macroexpand @node ContinuousNode range(0, 1, 8)
 
 # ---- #
@@ -48,15 +62,11 @@ set_index!(ca, 2)
 
 # ---- #
 
-methods(get_values)
+foreach(id -> @info(ContinuousNode(id)), 0:8)
 
 # ---- #
 
 co = ContinuousNode()
-
-# ---- #
-
-foreach(id -> @info(ContinuousNode(id)), eachindex(get_values(co)))
 
 # ---- #
 
@@ -72,15 +82,19 @@ set_index!(co, 8)
 
 # ---- #
 
-@macroexpand @factor p!(no::Node) = begin
+try
 
-    set_index!(no, 0)
+    set_index!(co, 9)
+
+catch er
+
+    @test er isa DomainError
 
 end
 
 # ---- #
 
-@factor p!(ca::CategoricalNode) = begin
+function p!(ca::CategoricalNode)
 
     set_index!(ca, rand() < 0.5 ? 1 : 2)
 
@@ -88,15 +102,17 @@ end
 
 # ---- #
 
-p!(ca)
+begin
+
+    p!(ca)
+
+    @info "" ca
+
+end
 
 # ---- #
 
-ca
-
-# ---- #
-
-@factor p!(co::ContinuousNode) = begin
+function p!(co::ContinuousNode)
 
     set_index!(co, rand(1:8))
 
@@ -104,11 +120,13 @@ end
 
 # ---- #
 
-p!(co)
+begin
 
-# ---- #
+    p!(co)
 
-co
+    @info "" co
+
+end
 
 # ---- #
 
@@ -116,7 +134,7 @@ co
 
 # ---- #
 
-@factor p!(ch::Child; ca::CategoricalNode, co::ContinuousNode) = begin
+function p!(ch::Child; ca::CategoricalNode, co::ContinuousNode)
 
     id_ = get_index(ca), get_index(co)
 

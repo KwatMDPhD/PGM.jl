@@ -1,8 +1,12 @@
+using PGM: p!
+
+# ---- #
+
 module Network
 
-using PGM: @factor, @node, get_index, set_index!
+using PGM: @ready
 
-import PGM: p!
+@ready
 
 @node Nature (:low, :high)
 
@@ -10,13 +14,13 @@ import PGM: p!
 
 @node Person range(0, 1, 8)
 
-@factor p!(na::Nature) = begin
+function p!(na::Nature)
 
     set_index!(na, rand() < 0.9 ? 1 : 2)
 
 end
 
-@factor p!(nu::Nurture) = begin
+function p!(nu::Nurture)
 
     ra = rand()
 
@@ -36,7 +40,7 @@ end
 
 end
 
-@factor p!(pe::Person; na::Nature, nu::Nurture) = begin
+function p!(pe::Person; na::Nature, nu::Nurture)
 
     id_ = get_index(na), get_index(nu)
 
@@ -60,10 +64,6 @@ end
 
 # ---- #
 
-using PGM: p!
-
-# ---- #
-
 na = Network.Nature()
 
 nu = Network.Nurture()
@@ -72,10 +72,14 @@ pe = Network.Person()
 
 # ---- #
 
-p!(na)
+begin
 
-p!(nu)
+    p!(na)
 
-p!(pe; na, nu)
+    p!(nu)
 
-[na, nu, pe]
+    p!(pe; na, nu)
+
+    @info "" na nu pe
+
+end
