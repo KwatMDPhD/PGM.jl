@@ -1,12 +1,12 @@
 module PGM
 
-using Graphs: DiGraph
+using Graphs: DiGraph, add_edge!, add_vertex!
 
 macro ready()
 
     esc(quote
 
-        using PGM: @node, get_index, set_index!
+        using PGM: @node, get_index, graph, set_index!
 
         import PGM: get_values, p!
 
@@ -83,5 +83,38 @@ function Base.show(io::IO, no::Node)
 end
 
 function p!() end
+
+function graph()
+
+    gr = DiGraph()
+
+    na_ = DataType[]
+
+    for na in names(@__MODULE__)
+
+        if getfield(@__MODULE__, na) isa DataType
+
+            push!(na_, na)
+
+        end
+
+    end
+
+    # TODO: Get edges.
+    for me in methods(p!)
+
+        pa_ = me.sig.parameters
+
+        if 1 < lastindex(pa_)
+
+            @info pa_
+
+        end
+
+    end
+
+    na_, gr
+
+end
 
 end
