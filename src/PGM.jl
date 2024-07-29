@@ -2,11 +2,13 @@ module PGM
 
 using Graphs: DiGraph, add_edge!, add_vertex!
 
+using MacroTools: combinedef, splitdef
+
 macro ready()
 
     esc(quote
 
-        using PGM: @node, get_index, graph, set_index!
+        using PGM: @edge, @node, get_index, graph, set_index!
 
         import PGM: get_values, p!
 
@@ -83,6 +85,34 @@ function Base.show(io::IO, no::Node)
 end
 
 function p!() end
+
+macro edge(fu)
+
+    sp = splitdef(fu)
+
+    na = sp[:name]
+
+    ar = sp[:args][]
+
+    ke_ = sort!(sp[:kwargs]; by = ke -> ke.args[2])
+
+    bo = pop!(sp, :body)
+
+    sp[:body] = quote
+
+        $na($(ar.args[1]), $((ke.args[1] for ke in ke_)...))
+
+    end
+
+    esc(quote
+
+        $(combinedef(sp))
+
+        $(combinedef(Dict(:name => na, :args => [ar, ke_...], :kwargs => (), :body => bo)))
+
+    end)
+
+end
 
 function graph()
 

@@ -1,6 +1,6 @@
 using Test: @test
 
-using PGM
+using PGM: @ready
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -94,7 +94,51 @@ end
 
 # ---- #
 
-function p!(ca::CategoricalNode)
+struct A end
+
+struct B end
+
+struct C end
+
+# ---- #
+
+@macroexpand @edge function fu(a::A; c::C, b::B) end
+
+@edge function fu(a::A; c::C, b::B)
+
+    @info a b c
+
+end
+
+# ---- #
+
+methods(fu)
+
+@test lastindex(methods(fu)) == 2
+
+@test hasmethod(fu, Tuple{A, B, C})
+
+@test !hasmethod(fu, Tuple{A, C, B})
+
+@test hasmethod(fu, Tuple{A})
+
+# ---- #
+
+a = A()
+
+b = B()
+
+c = C()
+
+fu(a; c, b)
+
+fu(a; b, c)
+
+fu(a, b, c)
+
+# ---- #
+
+@edge function p!(ca::CategoricalNode)
 
     set_index!(ca, rand() < 0.5 ? 1 : 2)
 
@@ -112,7 +156,7 @@ end
 
 # ---- #
 
-function p!(co::ContinuousNode)
+@edge function p!(co::ContinuousNode)
 
     set_index!(co, rand(1:8))
 
@@ -134,7 +178,7 @@ end
 
 # ---- #
 
-function p!(ch::Child; ca::CategoricalNode, co::ContinuousNode)
+@edge function p!(ch::Child; ca::CategoricalNode, co::ContinuousNode)
 
     id_ = get_index(ca), get_index(co)
 
