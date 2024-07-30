@@ -1,7 +1,3 @@
-using PGM: graph, p!
-
-# ---- #
-
 module Graph
 
 using PGM: @ready
@@ -40,7 +36,7 @@ end
 
 end
 
-@edge function p!(pe::Person; na::Nature, nu::Nurture)
+@edge function p!(pe::Person, na::Nature, nu::Nurture)
 
     id_ = get_index(na), get_index(nu)
 
@@ -72,14 +68,16 @@ pe = Graph.Person()
 
 # ---- #
 
-begin
+Graph.p!(na)
 
-    p!(na)
+Graph.p!(nu)
 
-    p!(nu)
+Graph.p!(pe, na, nu)
 
-    p!(pe; na, nu)
+@info "" na nu pe
 
-    @info "" na nu pe
+# ---- #
 
-end
+using PGM: graph
+
+ty_id, gr = graph(Graph)

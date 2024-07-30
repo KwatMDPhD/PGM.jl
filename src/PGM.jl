@@ -1,18 +1,20 @@
 module PGM
 
-using Graphs: DiGraph, add_edge!, add_vertex!
+using Graphs: DiGraph, add_edge!, add_vertex!, nv
 
 using MacroTools: combinedef, splitdef
 
+using OrderedCollections: OrderedDict
+
 macro ready()
 
-    esc(quote
+    quote
 
         using PGM: @edge, @node, get_index, set_index!
 
-        import PGM: get_values, p!
+        import PGM: _p!, get_values
 
-    end)
+    end
 
 end
 
@@ -72,43 +74,37 @@ end
 
 function Base.show(io::IO, no::Node)
 
-    ty = typeof(no)
+    ty = rsplit(string(typeof(no)), '.'; limit = 2)[2]
 
     va_ = get_values(no)
 
     id = get_index(no)
 
-    va = iszero(id) ? "" : va_[id]
-
-    print(io, "$ty $va_[$id] : $va")
+    print(io, iszero(id) ? "$ty $va_" : "$ty $va_[$id] : $(va_[id])")
 
 end
 
-function p!() end
+function _p!() end
 
 macro edge(fu)
 
     sp = splitdef(fu)
 
+    ar_ = sp[:args]
+
+    so_ = [ar_[1], sort(view(ar_, 2:lastindex(ar_)); by = ar -> ar.args[2])...]
+
     na = sp[:name]
-
-    ar = sp[:args][]
-
-    ke_ = sort!(sp[:kwargs]; by = ke -> ke.args[2])
 
     bo = pop!(sp, :body)
 
-    sp[:body] = quote
-
-        $na($(ar.args[1]), $((ke.args[1] for ke in ke_)...))
-
-    end
+    sp[:body] = :(_p!($((ar.args[1] for ar in so_)...)))
 
     esc(quote
 
         $(combinedef(sp))
 
-        $(combinedef(Dict(:name => na, :args => [ar, ke_...], :kwargs => (), :body => bo)))
+        $(combinedef(Dict(:name => :_p!, :args => so_, :kwargs => (), :body => bo)))
 
     end)
 
@@ -116,29 +112,45 @@ end
 
 function graph(mo)
 
-    gr = DiGraph()
+    gr = SimpleDiGraph()
 
-    na_ = DataType[]
+    ty_id = OrderedDict{DataType, UInt16}()
 
     for na in names(mo; all = true)
 
-        @info na getfield(mo, na)
+        fi = getfield(mo, na)
 
-    end
+        if fi isa DataType && fi <: Node
 
-    for me in methods(p!)
+            add_vertex!(gr)
 
-        pa_ = me.sig.parameters
-
-        if 1 < lastindex(pa_)
-
-            @info pa_
+            ty_id[fi] = nv(gr)
 
         end
 
     end
 
-    na_, gr
+    for me in methods(_p!)
+
+        pa_ = me.sig.parameters
+
+        if 1 < lastindex(pa_)
+
+            ch = pa_[2]
+
+            ic = ty_id[ch]
+
+            for pa in pa_[3:end]
+
+                add_edge!(gr, ty_id[pa] => ic)
+
+            end
+
+        end
+
+    end
+
+    ty_id, gr
 
 end
 
