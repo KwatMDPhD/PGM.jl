@@ -34,7 +34,7 @@ get_values(ca)
 
 # ---- #
 
-get_index(ca)
+ca.index
 
 # ---- #
 
@@ -74,7 +74,7 @@ get_values(co)
 
 # ---- #
 
-get_index(co)
+co.index
 
 # ---- #
 
@@ -122,13 +122,7 @@ end
 
 # ---- #
 
-a = A()
-
-b = B()
-
-c = C()
-
-fu(a, b, c)
+fu(A(), B(), C())
 
 # ---- #
 
@@ -174,7 +168,7 @@ end
 
 @edge function p!(ch::Child, ca::CategoricalNode, co::ContinuousNode)
 
-    id_ = get_index(ca), get_index(co)
+    id_ = ca.index, co.index
 
     set_index!(ch, if all(isodd, id_)
 
@@ -212,12 +206,10 @@ end
 
 # ---- #
 
-ty_id, gr = graph(Main)
+gr = graph(Main)
 
-ty_id
+gr.gr
 
-gr
+gr.no_
 
-# ---- #
-
-include("NatureNurture.jl")
+gr.no_id

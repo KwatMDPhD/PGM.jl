@@ -1,16 +1,16 @@
 module PGM
 
-using Graphs: SimpleDiGraph, add_edge!, add_vertex!, nv
+using Graphs: Graph, SimpleDiGraph, add_edge!, add_vertex!, nv
 
 using MacroTools: combinedef, splitdef
 
-using OrderedCollections: OrderedDict
+import Base: show
 
 macro ready()
 
     quote
 
-        using PGM: @edge, @node, get_index, set_index!
+        using PGM: @edge, @node, set_index!
 
         import PGM: p!, get_values
 
@@ -18,13 +18,13 @@ macro ready()
 
 end
 
-abstract type Node end
+abstract type PGMNode end
 
 macro node(no, va_)
 
     quote
 
-        mutable struct $no <: Node
+        mutable struct $no <: PGMNode
 
             index::UInt16
 
@@ -66,21 +66,15 @@ function set_index!(no, id)
 
 end
 
-function get_index(no)
+function show(io::IO, no::PGMNode)
 
-    no.index
-
-end
-
-function Base.show(io::IO, no::Node)
-
-    ty = typeof(no)
+    ty = rsplit(string(typeof(no)), '.'; limit = 2)[end]
 
     va_ = get_values(no)
 
-    id = get_index(no)
+    id = no.index
 
-    print(io, iszero(id) ? "$ty $va_" : "$ty $va_[$id] : $(va_[id])")
+    print(io, iszero(id) ? "$ty = $va_" : "$ty = $va_[$id] = $(va_[id])")
 
 end
 
@@ -98,21 +92,49 @@ macro edge(fu)
 
 end
 
+struct PGMGraph
+
+    gr::SimpleDiGraph
+
+    no_::Vector{DataType}
+
+    no_id::Dict{DataType, UInt16}
+
+    function PGMGraph()
+
+        new(SimpleDiGraph(), DataType[], Dict{DataType, UInt16}())
+
+    end
+
+end
+
+function add_node!(gr, no)
+
+    if haskey(gr.no_id, no)
+
+        error("$no exists.")
+
+    end
+
+    add_vertex!(gr.gr)
+
+    push!(gr.no_, no)
+
+    gr.no_id[no] = nv(gr.gr)
+
+end
+
 function graph(mo)
 
-    gr = SimpleDiGraph()
-
-    ty_id = OrderedDict{DataType, UInt16}()
+    gr = PGMGraph()
 
     for na in names(mo; all = true)
 
         fi = getfield(mo, na)
 
-        if fi isa DataType && fi <: Node
+        if fi isa DataType && fi <: PGMNode
 
-            add_vertex!(gr)
-
-            ty_id[fi] = nv(gr)
+            add_node!(gr, fi)
 
         end
 
@@ -128,17 +150,17 @@ function graph(mo)
 
         end
 
-        ic = ty_id[pa_[2]]
+        ic = gr.no_id[pa_[2]]
 
         for pa in pa_[3:end]
 
-            add_edge!(gr, ty_id[pa] => ic)
+            add_edge!(gr.gr, gr.no_id[pa] => ic)
 
         end
 
     end
 
-    ty_id, gr
+    gr
 
 end
 

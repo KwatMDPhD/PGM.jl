@@ -1,4 +1,4 @@
-module Graph
+module AGraph
 
 using PGM: @ready
 
@@ -38,7 +38,7 @@ end
 
 @edge function p!(pe::Person, na::Nature, nu::Nurture)
 
-    id_ = get_index(na), get_index(nu)
+    id_ = na.index, nu.index
 
     set_index!(pe, if id_ == (1, 1) || id_ == (1, 2)
 
@@ -60,18 +60,32 @@ end
 
 # ---- #
 
-na = Graph.Nature()
+begin
 
-nu = Graph.Nurture()
+    na = AGraph.Nature()
 
-pe = Graph.Person()
+    nu = AGraph.Nurture()
+
+    pe = AGraph.Person()
+
+    AGraph.p!(na)
+
+    AGraph.p!(nu)
+
+    AGraph.p!(pe, na, nu)
+
+    @info "" na nu pe
+
+end
 
 # ---- #
 
-Graph.p!(na)
+using PGM: graph
 
-Graph.p!(nu)
+gr = graph(AGraph)
 
-Graph.p!(pe, na, nu)
+gr.gr
 
-@info "" na nu pe
+gr.no_
+
+gr.no_id
