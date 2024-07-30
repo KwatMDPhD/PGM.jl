@@ -1,6 +1,6 @@
 using Test: @test
 
-using PGM
+using PGM: @ready
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -102,11 +102,11 @@ end
 
 # ---- #
 
-@macroexpand @edge function fu(a::A, b::B, c::C) end
+@macroexpand @factor function fu(a::A, b::B, c::C) end
 
 # ---- #
 
-@edge function fu(a::A, b::B, c::C)
+@factor function fu(a::A, b::B, c::C)
 
     @info "" a b c
 
@@ -126,7 +126,7 @@ fu(A(), B(), C())
 
 # ---- #
 
-@edge function p!(ca::CategoricalNode)
+@factor function p!(ca::CategoricalNode)
 
     set_index!(ca, rand() < 0.5 ? 1 : 2)
 
@@ -144,7 +144,7 @@ end
 
 # ---- #
 
-@edge function p!(co::ContinuousNode)
+@factor function p!(co::ContinuousNode)
 
     set_index!(co, rand(1:8))
 
@@ -166,7 +166,7 @@ end
 
 # ---- #
 
-@edge function p!(ch::Child, ca::CategoricalNode, co::ContinuousNode)
+@factor function p!(ch::Child, ca::CategoricalNode, co::ContinuousNode)
 
     id_ = ca.index, co.index
 
@@ -205,6 +205,8 @@ begin
 end
 
 # ---- #
+
+using PGM: graph
 
 gr = graph(Main)
 

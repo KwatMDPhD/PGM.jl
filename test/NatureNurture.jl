@@ -10,13 +10,13 @@ using PGM: @ready
 
 @node Person range(0, 1, 8)
 
-@edge function p!(na::Nature)
+@factor function p!(na::Nature)
 
     set_index!(na, rand() < 0.9 ? 1 : 2)
 
 end
 
-@edge function p!(nu::Nurture)
+@factor function p!(nu::Nurture)
 
     ra = rand()
 
@@ -36,7 +36,7 @@ end
 
 end
 
-@edge function p!(pe::Person, na::Nature, nu::Nurture)
+@factor function p!(pe::Person, na::Nature, nu::Nurture)
 
     id_ = na.index, nu.index
 
