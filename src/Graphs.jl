@@ -1,12 +1,12 @@
-module PGMGraphs
+module Graphs
 
 using Graphs: AbstractGraph, SimpleDiGraph, add_edge!, add_vertex!, nv
 
-using ..PGMNodes: PGMNode
+using ..Nodes: Node
 
-using ..PGMFactors: p!
+using ..Factors: p!
 
-struct PGMGraph
+struct Graph
 
     gr::AbstractGraph
 
@@ -14,7 +14,7 @@ struct PGMGraph
 
     no_id::Dict{DataType, UInt16}
 
-    function PGMGraph()
+    function Graph()
 
         new(SimpleDiGraph(), DataType[], Dict{DataType, UInt16}())
 
@@ -40,13 +40,13 @@ end
 
 function graph(mo)
 
-    gr = PGMGraph()
+    gr = Graph()
 
     for na in names(mo; all = true)
 
         fi = getfield(mo, na)
 
-        if fi isa DataType && fi <: PGMNode
+        if fi isa DataType && fi <: Node
 
             add_node!(gr, fi)
 

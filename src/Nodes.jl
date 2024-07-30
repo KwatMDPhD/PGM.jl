@@ -1,8 +1,8 @@
-module PGMNodes
+module Nodes
 
 import Base: show
 
-abstract type PGMNode end
+abstract type Node end
 
 function set_index!(no, id)
 
@@ -16,13 +16,15 @@ function set_index!(no, id)
 
 end
 
-function get_values() end
+function get_values()
+
+end
 
 macro node(no, va_)
 
     quote
 
-        mutable struct $no <: PGMNode
+        mutable struct $no <: Node
 
             index::UInt16
 
@@ -54,7 +56,7 @@ macro node(no, va_)
 
 end
 
-function show(io::IO, no::PGMNode)
+function show(io::IO, no::Node)
 
     ty = rsplit(string(typeof(no)), '.'; limit = 2)[end]
 
