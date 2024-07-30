@@ -8,7 +8,7 @@ macro ready()
 
     esc(quote
 
-        using PGM: @edge, @node, get_index, graph, set_index!
+        using PGM: @edge, @node, get_index, set_index!
 
         import PGM: get_values, p!
 
@@ -114,23 +114,18 @@ macro edge(fu)
 
 end
 
-function graph()
+function graph(mo)
 
     gr = DiGraph()
 
     na_ = DataType[]
 
-    for na in names(@__MODULE__)
+    for na in names(mo; all = true)
 
-        if getfield(@__MODULE__, na) isa DataType
-
-            push!(na_, na)
-
-        end
+        @info na getfield(mo, na)
 
     end
 
-    # TODO: Get edges.
     for me in methods(p!)
 
         pa_ = me.sig.parameters

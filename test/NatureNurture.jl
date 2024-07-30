@@ -1,8 +1,8 @@
-using PGM: p!
+using PGM: graph, p!
 
 # ---- #
 
-module Network
+module Graph
 
 using PGM: @ready
 
@@ -14,13 +14,13 @@ using PGM: @ready
 
 @node Person range(0, 1, 8)
 
-function p!(na::Nature)
+@edge function p!(na::Nature)
 
     set_index!(na, rand() < 0.9 ? 1 : 2)
 
 end
 
-function p!(nu::Nurture)
+@edge function p!(nu::Nurture)
 
     ra = rand()
 
@@ -40,7 +40,7 @@ function p!(nu::Nurture)
 
 end
 
-function p!(pe::Person; na::Nature, nu::Nurture)
+@edge function p!(pe::Person; na::Nature, nu::Nurture)
 
     id_ = get_index(na), get_index(nu)
 
@@ -64,11 +64,11 @@ end
 
 # ---- #
 
-na = Network.Nature()
+na = Graph.Nature()
 
-nu = Network.Nurture()
+nu = Graph.Nurture()
 
-pe = Network.Person()
+pe = Graph.Person()
 
 # ---- #
 
