@@ -1,6 +1,6 @@
 module PGM
 
-using Graphs: DiGraph, add_edge!, add_vertex!, nv
+using Graphs: SimpleDiGraph, add_edge!, add_vertex!, nv
 
 using MacroTools: combinedef, splitdef
 
@@ -12,7 +12,7 @@ macro ready()
 
         using PGM: @edge, @node, get_index, set_index!
 
-        import PGM: _p!, get_values
+        import PGM: p!, get_values
 
     end
 
@@ -74,7 +74,7 @@ end
 
 function Base.show(io::IO, no::Node)
 
-    ty = rsplit(string(typeof(no)), '.'; limit = 2)[2]
+    ty = typeof(no)
 
     va_ = get_values(no)
 
@@ -84,29 +84,17 @@ function Base.show(io::IO, no::Node)
 
 end
 
-function _p!() end
+function p!() end
 
 macro edge(fu)
 
-    sp = splitdef(fu)
+    if !issorted(splitdef(fu)[:args][2:end]; by = ar -> ar.args[2])
 
-    ar_ = sp[:args]
+        error("the second to last arguments are not sorted by type name.")
 
-    so_ = [ar_[1], sort(view(ar_, 2:lastindex(ar_)); by = ar -> ar.args[2])...]
+    end
 
-    na = sp[:name]
-
-    bo = pop!(sp, :body)
-
-    sp[:body] = :(_p!($((ar.args[1] for ar in so_)...)))
-
-    esc(quote
-
-        $(combinedef(sp))
-
-        $(combinedef(Dict(:name => :_p!, :args => so_, :kwargs => (), :body => bo)))
-
-    end)
+    :($(esc(fu)))
 
 end
 
@@ -130,21 +118,21 @@ function graph(mo)
 
     end
 
-    for me in methods(_p!)
+    for me in methods(p!)
 
         pa_ = me.sig.parameters
 
-        if 1 < lastindex(pa_)
+        if isone(lastindex(pa_))
 
-            ch = pa_[2]
+            continue
 
-            ic = ty_id[ch]
+        end
 
-            for pa in pa_[3:end]
+        ic = ty_id[pa_[2]]
 
-                add_edge!(gr, ty_id[pa] => ic)
+        for pa in pa_[3:end]
 
-            end
+            add_edge!(gr, ty_id[pa] => ic)
 
         end
 

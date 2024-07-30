@@ -1,6 +1,6 @@
 using Test: @test
 
-using PGM: @ready
+using PGM
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -94,33 +94,31 @@ end
 
 # ---- #
 
-struct A end
+for sy in (:A, :B, :C)
 
-struct B end
-
-struct C end
-
-# ---- #
-
-@macroexpand @edge function fu(a::A; c::C, b::B) end
-
-@edge function fu(a::A; c::C, b::B)
-
-    @info a b c
+    eval(:(struct $sy end))
 
 end
 
 # ---- #
 
-methods(fu)
+@macroexpand @edge function fu(a::A, b::B, c::C) end
 
-@test lastindex(methods(fu)) == 2
+# ---- #
+
+@edge function fu(a::A, b::B, c::C)
+
+    @info "" a b c
+
+end
+
+# ---- #
+
+@test isone(lastindex(methods(fu)))
+
+# ---- #
 
 @test hasmethod(fu, Tuple{A, B, C})
-
-@test !hasmethod(fu, Tuple{A, C, B})
-
-@test hasmethod(fu, Tuple{A})
 
 # ---- #
 
@@ -129,10 +127,6 @@ a = A()
 b = B()
 
 c = C()
-
-fu(a; c, b)
-
-fu(a; b, c)
 
 fu(a, b, c)
 
@@ -178,7 +172,7 @@ end
 
 # ---- #
 
-@edge function p!(ch::Child; ca::CategoricalNode, co::ContinuousNode)
+@edge function p!(ch::Child, ca::CategoricalNode, co::ContinuousNode)
 
     id_ = get_index(ca), get_index(co)
 
@@ -210,7 +204,7 @@ begin
 
     p!(co)
 
-    p!(ch; ca, co)
+    p!(ch, ca, co)
 
     @info "" ca co ch
 
@@ -218,7 +212,11 @@ end
 
 # ---- #
 
-graph()
+ty_id, gr = graph(Main)
+
+ty_id
+
+gr
 
 # ---- #
 

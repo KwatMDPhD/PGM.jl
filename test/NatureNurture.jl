@@ -75,9 +75,3 @@ Graph.p!(nu)
 Graph.p!(pe, na, nu)
 
 @info "" na nu pe
-
-# ---- #
-
-using PGM: graph
-
-ty_id, gr = graph(Graph)
