@@ -44,11 +44,7 @@ macro node(no, va_)
 
         end
 
-        # TODO: Remove.
-        import PGMs.Nodes: get_values
-
-        # TODO: Refer to `PGMs.Nodes.get_values`.
-        function $(esc(:get_values))(::$(esc(no)))
+        function $(esc(:(PGMs.Nodes.get_values)))(::$(esc(no)))
 
             $(esc(va_))
 

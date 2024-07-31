@@ -8,9 +8,9 @@ using PGMs.Nodes: @node
 
 @macroexpand @node CategoricalNode (:category1, :category2)
 
-# ---- #
-
 @node CategoricalNode (:category1, :category2)
+
+@test hasmethod(PGMs.Nodes.get_values, Tuple{CategoricalNode})
 
 # ---- #
 
@@ -42,9 +42,9 @@ PGMs.Nodes.set_index!(ca, 2)
 
 @macroexpand @node ContinuousNode range(0, 1, 8)
 
-# ---- #
-
 @node ContinuousNode range(0, 1, 8)
+
+@test hasmethod(PGMs.Nodes.get_values, Tuple{ContinuousNode})
 
 # ---- #
 

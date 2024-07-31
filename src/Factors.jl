@@ -1,6 +1,6 @@
 module Factors
 
-using MacroTools: splitdef
+using MacroTools: combinedef, splitdef
 
 function p!() end
 
@@ -20,13 +20,11 @@ macro factor(fu)
 
     end
 
+    sp[:name] = :(PGMs.Factors.p!)
+
     quote
 
-        # TODO: Remove.
-        import PGMs.Factors: p!
-
-        # TODO: Refer to `PGMs.Factors.p!`.
-        $(esc(fu))
+        $(esc(combinedef(sp)))
 
     end
 
