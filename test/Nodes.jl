@@ -4,8 +4,6 @@ using PGMs
 
 using PGMs.Nodes: @node
 
-import PGMs.Nodes: get_values
-
 # ---- #
 
 @macroexpand @node CategoricalNode (:category1, :category2)
@@ -14,13 +12,13 @@ import PGMs.Nodes: get_values
 
 @node CategoricalNode (:category1, :category2)
 
-foreach(id -> @info(CategoricalNode(id)), 0:2)
-
 # ---- #
+
+foreach(id -> @info(CategoricalNode(id)), 0:2)
 
 ca = CategoricalNode()
 
-@test get_values(ca) == (:category1, :category2)
+@test PGMs.Nodes.get_values(ca) == (:category1, :category2)
 
 # ---- #
 
@@ -48,13 +46,13 @@ PGMs.Nodes.set_index!(ca, 2)
 
 @node ContinuousNode range(0, 1, 8)
 
-foreach(id -> @info(ContinuousNode(id)), 0:8)
-
 # ---- #
+
+foreach(id -> @info(ContinuousNode(id)), 0:8)
 
 co = ContinuousNode()
 
-@test get_values(co) == range(0, 1, 8)
+@test PGMs.Nodes.get_values(co) == range(0, 1, 8)
 
 # ---- #
 

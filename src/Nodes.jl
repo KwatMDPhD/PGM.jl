@@ -4,6 +4,8 @@ import Base: show
 
 abstract type Node end
 
+function get_values() end
+
 function set_index!(no, id)
 
     if !(0 <= id <= lastindex(get_values(no)))
@@ -13,10 +15,6 @@ function set_index!(no, id)
     end
 
     no.index = id
-
-end
-
-function get_values()
 
 end
 
@@ -46,6 +44,10 @@ macro node(no, va_)
 
         end
 
+        # TODO: Remove.
+        import PGMs.Nodes: get_values
+
+        # TODO: Refer to `PGMs.Nodes.get_values`.
         function $(esc(:get_values))(::$(esc(no)))
 
             $(esc(va_))

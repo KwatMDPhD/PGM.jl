@@ -1,18 +1,12 @@
 using Test: @test
 
+using PGMs
+
 using PGMs.Factors: @factor
 
-import PGMs.Factors: p!
-
 # ---- #
 
-@test isone(lastindex(methods(p!)))
-
-# ---- #
-
-@macroexpand @factor function p!()
-
-end
+@test isone(lastindex(methods(PGMs.Factors.p!)))
 
 # ---- #
 
@@ -24,10 +18,10 @@ end
 
 # ---- #
 
-@factor function p!(a::A, c::B, b::C)
-
-end
+@macroexpand @factor function p!(a::A, c::B, b::C) end
 
 # ---- #
+
+@factor function p!(a::A, c::B, b::C) end
 
 @test hasmethod(p!, Tuple{A, B, C})

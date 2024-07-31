@@ -2,9 +2,7 @@ module Graphs
 
 using Graphs: AbstractGraph, SimpleDiGraph, add_edge!, add_vertex!, nv
 
-using ..Nodes: Node
-
-using ..Factors: p!
+using ..PGMs
 
 struct Graph
 
@@ -46,7 +44,7 @@ function graph(mo)
 
         fi = getfield(mo, na)
 
-        if fi isa DataType && fi <: Node
+        if fi isa DataType && fi <: PGMs.Nodes.Node
 
             add_node!(gr, fi)
 
@@ -54,7 +52,7 @@ function graph(mo)
 
     end
 
-    for me in methods(p!)
+    for me in methods(PGMs.Factors.p!)
 
         pa_ = me.sig.parameters
 
@@ -64,9 +62,17 @@ function graph(mo)
 
         end
 
-        ic = gr.no_id[pa_[2]]
+        pa_ = pa_[2:end]
 
-        for pa in pa_[3:end]
+        if any(pa -> !haskey(gr.no_id, pa), pa_)
+
+            continue
+
+        end
+
+        ic = gr.no_id[pa_[1]]
+
+        for pa in pa_[2:end]
 
             add_edge!(gr.gr, gr.no_id[pa] => ic)
 
