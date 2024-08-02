@@ -1,14 +1,15 @@
 name = "PGMs"
-uuid = "9d1bbcdd-0e3f-4a71-aa29-e2675ea556cb"
+uuid = "3d88420f-287c-479f-9438-e3c7a1b8275a"
 authors = ["KwatMDPhD"]
-version = "0.1.0"
+version = "1.0.0-DEV"
 
 [deps]
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
 
 [extras]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Aqua", "Test"]

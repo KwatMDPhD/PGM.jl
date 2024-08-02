@@ -1,6 +1,12 @@
+using PGMs
+
+using Aqua: test_all, test_ambiguities
+
 using Test: @test
 
-using PGMs
+test_all(PGMs; ambiguities = false, deps_compat = false)
+
+test_ambiguities(PGMs)
 
 # ----------------------------------------------------------------------------------------------- #
 

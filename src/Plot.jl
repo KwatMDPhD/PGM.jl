@@ -116,7 +116,7 @@ function plot(
 
     end
 
-    nothing
+    return nothing
 
 end
 
@@ -134,7 +134,7 @@ function read(js)
 
     end
 
-    el_
+    return el_
 
 end
 
@@ -174,7 +174,7 @@ function plot(
 
     if !isempty(el_)
 
-        Nucleus.Graph.position!(no_, el_)
+        position!(no_, el_)
 
     end
 
@@ -194,8 +194,8 @@ function plot(
                 st_,
                 Dict(
                     "selector" => "#$(no["data"]["id"])",
-                    "style" =>
-                        Dict("background-color" => Nucleus.Color.color(he, Nucleus.Color.COBW)),
+                    "style" => Dict("background-color" =>
+                        Nucleus.Color.color(he, Nucleus.Color.COBW)),
                 ),
             )
 
@@ -211,7 +211,7 @@ function plot(
 
     ga = nos * 0.16
 
-    Nucleus.Graph.plot(
+    return Nucleus.Graph.plot(
         ht,
         vcat(no_, ed_);
         st_ = append!(

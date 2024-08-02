@@ -1,8 +1,8 @@
-using Test: @test
-
 using PGMs
 
 using PGMs.Factors: @factor
+
+using Test: @test
 
 # ---- #
 

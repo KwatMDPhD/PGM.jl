@@ -2,8 +2,6 @@
 
 ⚠️ Under rapid development 👷
 
-Variable names follow [the two-character style]().
-
 ## Representation
 
 A module defines nodes and factors.

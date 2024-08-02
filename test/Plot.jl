@@ -1,5 +1,5 @@
-using Test: @test
-
 using PGMs
+
+using Test: @test
 
 # ---- #

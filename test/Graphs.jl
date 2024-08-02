@@ -1,8 +1,8 @@
-using Test: @test
+using PGMs
 
 using Graphs: nv
 
-using PGMs
+using Test: @test
 
 # ---- #
 
@@ -20,7 +20,7 @@ using PGMs.Factors: @factor
 
 @factor function p!(na::Nature)
 
-    set_index!(na, rand() < 0.9 ? 1 : 2)
+    return set_index!(na, rand() < 0.9 ? 1 : 2)
 
 end
 
@@ -28,7 +28,7 @@ end
 
     ra = rand()
 
-    set_index!(nu, if ra < 0.2
+    return set_index!(nu, if ra < 0.2
 
         1
 
@@ -48,7 +48,7 @@ end
 
     id_ = na.index, nu.index
 
-    set_index!(pe, if id_ == (1, 1) || id_ == (1, 2)
+    return set_index!(pe, if id_ == (1, 1) || id_ == (1, 2)
 
         rand(1:2)
 
@@ -84,13 +84,13 @@ using PGMs.Factors: @factor
 
 @factor function p!(fa::Father)
 
-    set_index!(fa, rand() < 0.5 ? 1 : 2)
+    return set_index!(fa, rand() < 0.5 ? 1 : 2)
 
 end
 
 @factor function p!(mo::Mother)
 
-    set_index!(mo, rand(1:8))
+    return set_index!(mo, rand(1:8))
 
 end
 
@@ -98,7 +98,7 @@ end
 
     id_ = fa.index, mo.index
 
-    set_index!(da, if all(isodd, id_)
+    return set_index!(da, if all(isodd, id_)
 
         1
 
@@ -118,7 +118,7 @@ end
 
     id_ = fa.index, mo.index
 
-    set_index!(so, if all(isodd, id_)
+    return set_index!(so, if all(isodd, id_)
 
         1
 

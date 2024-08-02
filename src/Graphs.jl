@@ -14,7 +14,7 @@ struct Graph
 
     function Graph()
 
-        new(SimpleDiGraph(), DataType[], Dict{DataType, UInt16}())
+        return new(SimpleDiGraph(), DataType[], Dict{DataType, UInt16}())
 
     end
 
@@ -32,7 +32,7 @@ function add_node!(gr, no)
 
     push!(gr.no_, no)
 
-    gr.no_id[no] = nv(gr.gr)
+    return gr.no_id[no] = nv(gr.gr)
 
 end
 
@@ -80,7 +80,7 @@ function graph(mo)
 
     end
 
-    gr
+    return gr
 
 end
 

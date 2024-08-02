@@ -1,8 +1,8 @@
-using Test: @test
-
 using PGMs
 
 using PGMs.Nodes: @node
+
+using Test: @test
 
 # ---- #
 

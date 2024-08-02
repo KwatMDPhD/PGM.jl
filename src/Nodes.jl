@@ -14,7 +14,7 @@ function set_index!(no, id)
 
     end
 
-    no.index = id
+    return no.index = id
 
 end
 
@@ -28,7 +28,7 @@ macro node(no, va_)
 
             function $no()
 
-                new(0)
+                return new(0)
 
             end
 
@@ -38,7 +38,7 @@ macro node(no, va_)
 
                 set_index!(no, id)
 
-                no
+                return no
 
             end
 
@@ -46,7 +46,7 @@ macro node(no, va_)
 
         function $(esc(:(PGMs.Nodes.get_values)))(::$(esc(no)))
 
-            $(esc(va_))
+            return $(esc(va_))
 
         end
 
@@ -62,7 +62,7 @@ function show(io::IO, no::Node)
 
     id = no.index
 
-    print(io, iszero(id) ? "$ty = $va_" : "$ty = $va_[$id] = $(va_[id])")
+    return print(io, iszero(id) ? "$ty = $va_" : "$ty = $va_[$id] = $(va_[id])")
 
 end
 
